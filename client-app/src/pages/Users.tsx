@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUsers } from "../services/api";
+import UserRow from "../components/UserRow"
 
 function Users() {
   const [users, setUsers] = useState<any[]>([]);
@@ -24,13 +25,22 @@ function Users() {
   return (
     <div>
       <h1>Users page</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.name} - {user.email}
-          </li>
-        ))}
-      </ul>
+
+      <table border={1} cellPadding={8}>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {users.map((user) => (
+            <UserRow key={user.id} user={user} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
