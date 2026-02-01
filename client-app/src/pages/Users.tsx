@@ -6,6 +6,7 @@ function Users() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     getUsers()
@@ -26,6 +27,15 @@ function Users() {
     <div>
       <h1>Users page</h1>
 
+      <input 
+        type="text"
+        placeholder="Search by name..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <hr />
+
       <table border={1} cellPadding={8}>
         <thead>
           <tr>
@@ -36,7 +46,11 @@ function Users() {
         </thead>
 
         <tbody>
-          {users.map((user) => (
+          {users
+            .filter((user) =>
+              user.name.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((user) => (
             <UserRow key={user.id} user={user} />
           ))}
         </tbody>
