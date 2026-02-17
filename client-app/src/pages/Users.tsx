@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getUsers } from "../services/api";
 import UserRow from "../components/UserRow"
 
 function Users() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = Number(searchParams.get("page")) || 1;
   const usersPerPage = 3;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [users, setUsers] = useState<any[]>([]);
@@ -11,7 +13,7 @@ function Users() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
 
-  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfLastUser = page * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users
     .filter((user) =>
@@ -76,7 +78,7 @@ function Users() {
         ).map((page) => (
           <button
             key={page}
-            onClick={() => setCurrentPage(page)}
+            onClick={() => setSearchParams({ page: String(page) })}
             style={{ marginRight: "5px" }}
           >
             {page}

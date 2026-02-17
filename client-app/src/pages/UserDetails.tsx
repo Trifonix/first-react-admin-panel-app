@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getUserById } from "../services/api";
 
 function UserDetails() {
@@ -7,6 +9,7 @@ function UserDetails() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
@@ -34,6 +37,8 @@ function UserDetails() {
       <p><strong>Email:</strong> {user.email}</p>
       <p><strong>Phone:</strong> {user.phone}</p>
       <p><strong>Website:</strong> {user.website}</p>
+
+      <button onClick={() => navigate(-1)}>Back</button>
     </div>
   );
 }
