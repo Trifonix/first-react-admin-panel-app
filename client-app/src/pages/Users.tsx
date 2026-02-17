@@ -3,10 +3,21 @@ import { getUsers } from "../services/api";
 import UserRow from "../components/UserRow"
 
 function Users() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 3;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users
+    .filter((user) =>
+      user.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .slice(indexOfFirstUser, indexOfLastUser);
 
   useEffect(() => {
     getUsers()
@@ -46,15 +57,32 @@ function Users() {
         </thead>
 
         <tbody>
-          {users
-            .filter((user) =>
-              user.name.toLowerCase().includes(search.toLowerCase())
-            )
-            .map((user) => (
+          {currentUsers.map((user) => (
             <UserRow key={user.id} user={user} />
           ))}
         </tbody>
       </table>
+
+      <div style={{ marginTop: "10px" }}>
+        {Array.from(
+          {
+            length: Math.ceil(
+              users.filter((user) =>
+                user.name.toLowerCase().includes(search.toLowerCase())
+              ).length / usersPerPage
+            ),
+          },
+          (_, i) => i + 1
+        ).map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            style={{ marginRight: "5px" }}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
