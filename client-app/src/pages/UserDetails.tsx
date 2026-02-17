@@ -10,6 +10,14 @@ function UserDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    website: ""
+  });
 
   useEffect(() => {
     if (!id) return;
@@ -25,6 +33,17 @@ function UserDetails() {
       });
   }, [id]);
 
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        website: user.website
+      });
+    }
+  }, [user]);
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
   if (!user) return <p>No user found</p>;
@@ -33,10 +52,44 @@ function UserDetails() {
     <div>
       <h1>UserDetails page</h1>
       <p><strong>ID:</strong> {user.id}</p>
-      <p><strong>Name:</strong> {user.name}</p>
-      <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Phone:</strong> {user.phone}</p>
-      <p><strong>Website:</strong> {user.website}</p>
+
+      {isEditing ? (
+        <div>
+          <input
+            value={formData.name}
+            onChange={(e) =>
+              setFormData({ ...formData, name: e.target.value })
+            }
+          />
+
+          <input
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+
+          <button
+            onClick={() => {
+              console.log(formData);
+              setIsEditing(false);
+            }}
+          >
+            Save
+          </button>
+        </div>
+      ) : (
+        <>
+          <p><strong>Name:</strong> {user.name}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Phone:</strong> {user.phone}</p>
+          <p><strong>Website:</strong> {user.website}</p>
+        </>
+      )}
+
+      {!isEditing && (
+        <button onClick={() => setIsEditing(true)}>Edit</button>
+      )}
 
       <button onClick={() => navigate(-1)}>Back</button>
     </div>
