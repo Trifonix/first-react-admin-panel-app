@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { getUserById } from "../services/api";
+import { updateUser } from "../services/api"
 
 function UserDetails() {
   const { id } = useParams();
@@ -11,6 +12,8 @@ function UserDetails() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -69,6 +72,7 @@ function UserDetails() {
             }
           />
 
+          {/*  
           <button
             onClick={() => {
               console.log(formData);
@@ -76,6 +80,29 @@ function UserDetails() {
             }}
           >
             Save
+          </button>
+          */}
+
+          <button
+            disabled={saving}
+            onClick={async () => {
+              try {
+                setSaving(true);
+                setSaveError("");
+
+                const updatedUser = await updateUser(id!, formData);
+
+                setUser(updatedUser);
+                setIsEditing(false);
+              } catch (err) {
+                console.error("Save failed:", err);
+                setSaveError("Failed to save changes");
+              } finally {
+                setSaving(false);
+              }
+            }}
+          >
+            {saving ? "Saving..." : "Save"}
           </button>
         </div>
       ) : (
@@ -86,6 +113,8 @@ function UserDetails() {
           <p><strong>Website:</strong> {user.website}</p>
         </>
       )}
+
+      {saveError && <p style={{ color: "red"}}>SaveError</p>}
 
       {!isEditing && (
         <button onClick={() => setIsEditing(true)}>Edit</button>
