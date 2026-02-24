@@ -2,14 +2,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { getUserById } from "../services/api";
-import { updateUser } from "../services/api"
+import { updateUser } from "../services/api";
+import { useUser } from "../hooks/useUser";
 
 function UserDetails() {
   const { id } = useParams();
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { user, loading, error, setUser } = useUser(id);
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -21,20 +19,6 @@ function UserDetails() {
     phone: "",
     website: ""
   });
-
-  useEffect(() => {
-    if (!id) return;
-
-    getUserById(id)
-      .then((data) => {
-        setUser(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Error loading user");
-        setLoading(false);
-      });
-  }, [id]);
 
   useEffect(() => {
     if (user) {
