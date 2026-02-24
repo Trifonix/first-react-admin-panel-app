@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export async function getUsers() {
+import type { User } from "../types/User";
+
+export async function getUsers(): Promise<User> {
   const response = await fetch(
     "https://jsonplaceholder.typicode.com/users"
   );
@@ -11,7 +12,7 @@ export async function getUsers() {
   return response.json();
 }
 
-export async function getUserById(id: string) {
+export async function getUserById(id: string): Promise<User> {
   const response = await fetch(
     `https://jsonplaceholder.typicode.com/users/${id}`
   );
